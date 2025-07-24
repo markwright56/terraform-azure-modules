@@ -13,10 +13,6 @@ Use of commit tags both when updating this repository and when referencing the m
 ### Modules included
 
 * Azure Lock
-* Private Endpoint
-* NSG
-* Storage Account
-* Windows Compute
 
 ### Module updates
 
@@ -47,7 +43,7 @@ To use a module in a parent repository the source element should be included.
 ```hcl
 # Sample module entry
 module "apply_locks" {
-  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/azure-lock?ref=v1.1.0"
+  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/azure-lock?ref=v1.0.0"
   ...
 }
 ```
@@ -59,7 +55,7 @@ The format of the source url is defined in 3 parts:
 2. The sub-folder for the module required (e.g.)
    * `//modules/azure-lock`
 3. The tag reference for the version (e.g.)
-   * `?ref=v1.1.0`
+   * `?ref=v1.0.0`
 
 ## Directory Structure
 
@@ -72,28 +68,8 @@ Each module is contained within it's own sub folder under the `modules` parent f
 |   |   |-- main.tf           # Main configuration file for azure lock module
 |   |   |-- README.md         # README file for azure lock module
 |   |   |-- variables.tf      # Input variables file for azure lock module
-|   |-- private-endpoint      # Private Endpoint module sub folder
-|   |   |-- main.tf           # Main configuration file for private endpoint module
-|   |   |-- outputs.tf        # Outputs file for private endpoint module
-|   |   |-- README.md         # README file for private endpoint module
-|   |   |-- terraform.tf      # Provider configuration file for private endpoint module
-|   |   |-- variables.tf      # Input variables file for private endpoint module
-|   |-- nsg                   # Nsg module sub folder
-|   |   |-- main.tf           # Main configuration file for nsg module
-|   |   |-- outputs.tf        # Outputs file for nsg module
-|   |   |-- README.md         # README file for nsg module
-|   |   |-- variables.tf      # Input variables file for nsg module
-|   |-- storage_account       # Storage account module sub folder
-|   |   |-- main.tf           # Main configuration file for storage account module
-|   |   |-- outputs.tf        # Outputs file for storage account module
-|   |   |-- README.md         # README file for storage account module
-|   |   |-- variables.tf      # Input variables file for storage account module
-|   |-- windows-compute       # Windows compute module sub folder
-|   |   |-- main.tf           # Main configuration file for windows compute module
-|   |   |-- outputs.tf        # Outputs file for windows compute module
-|   |   |-- README.md         # README file for windows compute module
-|   |   |-- variables.tf      # Input variables file for windows compute module
 |-- .gitignore                # Git ignore file
+|-- CHANGELOG.md              # Changelog file
 |-- README.md                 # This file
 
 ```

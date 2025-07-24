@@ -43,7 +43,7 @@ In your main Terraform configuration (e.g., `main.tf`), add the following block 
 ```hcl
 module "apply_locks" {
   count               = var.apply_locks ? 1 : 0
-  source              = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/azure-lock?ref=v1.1.1"
+  source              = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/azure-lock?ref=v1.0.0"
   resource_group_name = var.resource_group_name
   tag_name            = "ConfigurationManagedBy"
   tag_value           = "Terraform"
