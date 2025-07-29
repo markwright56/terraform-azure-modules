@@ -12,7 +12,8 @@ Use of commit tags both when updating this repository and when referencing the m
 
 ### Modules included
 
-* Azure Lock
+* [Azure Lock](modules/azure-lock/README.md)
+* [Storage Account](modules/storage-account/README.md)
 
 ### Module updates
 
@@ -68,6 +69,11 @@ Each module is contained within it's own sub folder under the `modules` parent f
 |   |   |-- main.tf           # Main configuration file for azure lock module
 |   |   |-- README.md         # README file for azure lock module
 |   |   |-- variables.tf      # Input variables file for azure lock module
+|   |-- storage_account       # Storage account module sub folder
+|   |   |-- main.tf           # Main configuration file for storage account module
+|   |   |-- outputs.tf        # Outputs file for storage account module
+|   |   |-- README.md         # README file for storage account module
+|   |   |-- variables.tf      # Input variables file for storage account module
 |-- .gitignore                # Git ignore file
 |-- CHANGELOG.md              # Changelog file
 |-- README.md                 # This file
