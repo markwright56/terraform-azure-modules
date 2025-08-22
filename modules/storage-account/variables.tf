@@ -1,6 +1,6 @@
 # Storage Account Variables
 variable "storage_account_name" {
-  description = "The name of the storage account name (ex: storageaccount)"
+  description = "The name of the storage account (ex: storageaccount)"
   type        = string
   validation {
     condition     = length(var.storage_account_name) >= 3 && length(var.storage_account_name) <= 24 && can(regex("^[a-z0-9]+$", var.storage_account_name))
@@ -76,6 +76,14 @@ variable "network_rules" {
     ip_rules                   = optional(set(string), [])
     virtual_network_subnet_ids = optional(set(string), [])
   })
+  validation {
+    condition     = var.network_rules.enable_network_rules == false ? true : contains(["Deny", "Allow"], var.network_rules.default_action)
+    error_message = "If network rules are enabled, default_action must be either 'Deny' or 'Allow'."
+  }
+  validation {
+    condition     = var.network_rules.enable_network_rules == false ? true : contains(["AzureServices", "None"], var.network_rules.bypass)
+    error_message = "If network rules are enabled, bypass must be either 'AzureServices' or 'None'."
+  }
 }
 
 # Azure Files Authentication
