@@ -294,8 +294,10 @@ module "test_storage_account" {
   storage_account_name       = var.storage_account_name
   resource_group_name        = azurerm_resource_group.test.name
   location                   = var.location
-  enable_network_rules       = true
-  virtual_network_subnet_ids = [azurerm_subnet.test.id]
+  network_rules              = {
+    enable_network_rules       = true
+    virtual_network_subnet_ids = [azurerm_subnet.test.id]
+  }
   blob_storage_containers    = {
     "stcon-${var.storage_account_name}-1" = {
       name        = lower("stcon-${var.storage_account_name}-1")
