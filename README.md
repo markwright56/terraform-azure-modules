@@ -14,6 +14,7 @@ Use of commit tags both when updating this repository and when referencing the m
 
 * [Azure Lock](modules/azure-lock/README.md)
 * [Key Vault](modules/key-vault/README.md)
+* [Network Security Group - nsg](modules/nsg/README.md)
 * [Storage Account](modules/storage-account/README.md)
 
 ### Module updates
@@ -77,6 +78,12 @@ Each module is contained within it's own sub folder under the `modules` parent f
 |   |   |-- README.md         # README file for key vault module
 |   |   |-- variables.tf      # Input variables file for key vault module
 |   |   |-- versions.tf       # Recommended versions definition file for key vault module
+|   |-- nsg                   # Network security group module sub folder
+|   |   |-- main.tf           # Main configuration file for network security group module
+|   |   |-- outputs.tf        # Outputs file for network security group module
+|   |   |-- README.md         # README file for network security group module
+|   |   |-- variables.tf      # Input variables file for network security group module
+|   |   |-- versions.tf       # Recommended versions definition file for network security group module
 |   |-- storage-account       # Storage account module sub folder
 |   |   |-- main.tf           # Main configuration file for storage account module
 |   |   |-- outputs.tf        # Outputs file for storage account module
