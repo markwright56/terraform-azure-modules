@@ -4,6 +4,10 @@ This file tracks each version tag to record the additions and changes made.
 
 Using this file will indicate which version to include on the source reference element.
 
+## v1.0.5 - 2025-08-28
+
+Add nsg module.
+
 ## v1.0.4 - 2025-08-22
 
 Add key-vault module.
