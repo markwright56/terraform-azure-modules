@@ -16,13 +16,13 @@ Terraform module for creating NSG (Network Security Group) and associated Inboun
 
 |Name                    |Description                                          |Type               |Default         |
 |------------------------|-----------------------------------------------------|-------------------|----------------|
-|inbound_rules           |Object list of inbound_rules (see below).            |set(object({}))    |[]              |
-|outbound_rules          |Object list of outbound_rules (see below).           |set(object({}))    |[]              |
+|inbound_rules           |Object map of inbound_rules (see below).             |map(object({}))    |{}              |
+|outbound_rules          |Object map of outbound_rules (see below).            |map(object({}))    |{}              |
 |tags                    |Tags to set on the resources.                        |map(string)        |{}              |
 
 ### Inbound and Outbound rule objects
 
-Optional lists of inbound and outbound rules to apply to the NSG.
+Optional map of inbound and outbound rules to apply to the NSG.
 NOTE: the name of the network rule will be standardised to contain the 3 elements `access` `name` `direction` e.g. 'AllowSQLInbound'. To create a custom rule name set the `override_standard_naming` variable to `true` and pass the full name required.
 
 #### Required
@@ -56,8 +56,8 @@ Note: Where single or list options are available, one or other can be entered bu
 Format
 
 ```hcl
-  inbound_rules = [
-    {
+  inbound_rules = {
+    "RDP" = {
       # RDP
       name                   = "RDP"
       description            = "Allow Remote Desktop Protocol (RDP) inbound connectivity"
@@ -67,7 +67,7 @@ Format
       source_address_prefix  = "10.0.0.0/8"
       destination_port_range = "3389"
     },
-    {
+    "All" = {
       # Deny all other inbound traffic
       name        = "All"
       description = "Block all other inbound traffic"
@@ -75,7 +75,7 @@ Format
       priority    = 4000
       protocol    = "*"
     }
-  ]
+  }
 ```
 
 ## Outputs
@@ -149,7 +149,7 @@ resource "azurerm_resource_group" "test" {
 # test nsg and rules #
 ## Create network security group with inbound and outbound rules
 module "nsg_test" {
-  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/nsg?ref=v1.0.5"
+  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/nsg?ref=v1.0.6"
 
   nsg_name            = var.nsg_name
   resource_group_name = azurerm_resource_group.test.name
@@ -159,8 +159,8 @@ module "nsg_test" {
     #AdditionalTagNameHere = "tag value here"
   })
 
-  inbound_rules = [
-    {
+  inbound_rules = {
+    "RDP" = {
       # RDP
       name                   = "RDP"
       description            = "Allow Remote Desktop Protocol (RDP) inbound connectivity"
@@ -170,7 +170,7 @@ module "nsg_test" {
       source_address_prefix  = "10.0.0.0/8"
       destination_port_range = "3389"
     },
-    {
+    "All" = {
       # Deny all other inbound traffic
       name        = "All"
       description = "Block all other inbound traffic"
@@ -178,10 +178,10 @@ module "nsg_test" {
       priority    = 4000
       protocol    = "*"
     }
-  ]
+  }
 
-  outbound_rules = [
-    {
+  outbound_rules = {
+    "WebTraffic" = {
       # Web Traffic
       name                    = "WebTraffic"
       description             = "Allow outbound web traffic to the internet"
@@ -190,7 +190,7 @@ module "nsg_test" {
       protocol                = "Tcp"
       destination_port_ranges = ["80", "443"]
     },
-    {
+    "All" = {
       # Deny all other outbound traffic
       name        = "All"
       description = "Block all other outbound traffic"
@@ -198,7 +198,7 @@ module "nsg_test" {
       priority    = 4000
       protocol    = "*"
     }
-  ]
+  }
 }
 
 ```

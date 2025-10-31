@@ -4,6 +4,10 @@ This file tracks each version tag to record the additions and changes made.
 
 Using this file will indicate which version to include on the source reference element.
 
+## v1.0.6 - 2025-10-31
+
+Update nsg module to make inbound and outbound rule variable map objects rather than set.  This allows for merging of common and custom rules in the source repository.
+
 ## v1.0.5 - 2025-08-28
 
 Add nsg module.
