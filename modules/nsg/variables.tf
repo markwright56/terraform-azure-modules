@@ -20,8 +20,8 @@ variable "location" {
 
 # Inbound Security Rules
 variable "inbound_rules" {
-  description = "A set of inbound security rules to be applied to the network security group"
-  type = set(object({
+  description = "A map of inbound security rules to be applied to the network security group"
+  type = map(object({
     name                                       = string
     override_standard_naming                   = optional(bool, false)
     description                                = string
@@ -39,7 +39,7 @@ variable "inbound_rules" {
     destination_port_range                     = optional(string)
     destination_port_ranges                    = optional(set(string))
   }))
-  default = []
+  default = {}
   validation {
     condition     = alltrue([for rule in var.inbound_rules : contains(["Allow", "Deny"], rule.access)])
     error_message = "Each inbound rule 'access' must be 'Allow' or 'Deny'."
@@ -60,8 +60,8 @@ variable "inbound_rules" {
 
 # Outbound Security Rules
 variable "outbound_rules" {
-  description = "A set of outbound security rules to be applied to the network security group"
-  type = set(object({
+  description = "A map of outbound security rules to be applied to the network security group"
+  type = map(object({
     name                                       = string
     override_standard_naming                   = optional(bool, false)
     description                                = string
@@ -79,7 +79,7 @@ variable "outbound_rules" {
     destination_port_range                     = optional(string)
     destination_port_ranges                    = optional(set(string))
   }))
-  default = []
+  default = {}
   validation {
     condition     = alltrue([for rule in var.outbound_rules : contains(["Allow", "Deny"], rule.access)])
     error_message = "Each outbound rule 'access' must be 'Allow' or 'Deny'."

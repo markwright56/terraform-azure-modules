@@ -9,7 +9,7 @@ resource "azurerm_network_security_group" "nsg" {
 
 # Create inbound security rules
 resource "azurerm_network_security_rule" "inbound_rules" {
-  for_each = { for rule in var.inbound_rules : rule.name => rule }
+  for_each = var.inbound_rules
 
   resource_group_name                        = var.resource_group_name
   network_security_group_name                = azurerm_network_security_group.nsg.name
@@ -35,7 +35,7 @@ resource "azurerm_network_security_rule" "inbound_rules" {
 
 # Create outbound security rules
 resource "azurerm_network_security_rule" "outbound_rules" {
-  for_each = { for rule in var.outbound_rules : rule.name => rule }
+  for_each = var.outbound_rules
 
   resource_group_name                        = var.resource_group_name
   network_security_group_name                = azurerm_network_security_group.nsg.name
