@@ -3,6 +3,8 @@ resource "azurerm_storage_account" "storage" {
   name                             = var.storage_account_name
   resource_group_name              = var.resource_group_name
   location                         = var.location
+  account_kind                     = var.account_kind
+  access_tier                      = var.access_tier
   account_tier                     = var.account_tier
   account_replication_type         = var.account_replication_type
   allow_nested_items_to_be_public  = var.allow_nested_items_to_be_public
@@ -97,15 +99,16 @@ resource "azurerm_storage_share" "file_share" {
   name               = each.value.name
   storage_account_id = azurerm_storage_account.storage.id
   quota              = try(each.value.quota, null)
+  access_tier        = try(each.value.access_tier, "Hot")
 
   depends_on = [azurerm_storage_account.storage]
 }
 
 # Create queues
 resource "azurerm_storage_queue" "queue" {
-  for_each             = var.storage_queues
-  name                 = each.value
-  storage_account_name = azurerm_storage_account.storage.name
+  for_each           = var.storage_queues
+  name               = each.value
+  storage_account_id = azurerm_storage_account.storage.id
 
   depends_on = [azurerm_storage_account.storage]
 }
