@@ -18,6 +18,26 @@ variable "location" {
   type        = string
 }
 
+variable "account_kind" {
+  description = "The account kind of the storage account (ex: StorageV2, BlobStorage)"
+  type        = string
+  default     = "StorageV2"
+  validation {
+    condition     = contains(["BlobStorage", "FileStorage", "Storage", "StorageV2"], var.account_kind)
+    error_message = "Account kind must be either 'BlobStorage', 'FileStorage', 'Storage' or 'StorageV2'."
+  }
+}
+
+variable "access_tier" {
+  description = "The access tier of the storage account (ex: Hot, Cold)"
+  type        = string
+  default     = "Hot"
+  validation {
+    condition     = contains(["Hot", "Cool", "Cold"], var.access_tier)
+    error_message = "Access tier must be either 'Hot', 'Cool' or 'Cold'."
+  }
+}
+
 variable "account_tier" {
   description = "The performance tier of the storage account (ex: Standard, Premium)"
   type        = string
@@ -139,7 +159,10 @@ variable "blob_properties" {
 # Storage Blob Containers
 variable "storage_blob_containers" {
   description = "A map of storage blob containers to be created with their access types"
-  type        = map(any)
+  type = map(object({
+    name        = string
+    access_type = optional(string, "private") # Options: private, blob, container
+  }))
   default = {
     # "container1" = {
     #   name        = "container1"
@@ -167,7 +190,11 @@ variable "storage_blob_containers" {
 # Storage File Shares 
 variable "storage_file_shares" {
   description = "A map of storage file shares to be created with their quotas"
-  type        = map(any)
+  type = map(object({
+    name        = string
+    quota       = optional(number)        # Quota in GB
+    access_tier = optional(string, "Hot") # Access tier for premium file shares: TransactionOptimized, Hot, Cool
+  }))
   default = {
     # "share1" = {
     #   name  = "share1"
@@ -185,6 +212,10 @@ variable "storage_file_shares" {
   validation {
     condition     = alltrue([for share in var.storage_file_shares : length(share.name) >= 3 && length(share.name) <= 63])
     error_message = "All share names must be between 3 and 63 characters long."
+  }
+  validation {
+    condition     = alltrue([for share in var.storage_file_shares : contains(["Hot", "Cool", "TransactionOptimized"], share.access_tier)])
+    error_message = "File share access tier must be one of 'Hot', 'Cool' or 'TransactionOptimized'."
   }
 }
 

@@ -23,6 +23,7 @@ Optionally create blob containers, file shares and queues based upon variable ma
 
 |Name                            |Description                                                                 |Type             |Default         |
 |--------------------------------|----------------------------------------------------------------------------|-----------------|----------------|
+|access_tier                     |The access tier of the storage account (ex: Hot, Cold).                     |string           |"Hot"           |
 |account_tier                    |The performance tier of the storage account (ex: Standard, Premium).        |string           |"Standard"      |
 |account_replication_type        |The replication strategy of the storage account (ex: ZRS,RAGRS).            |string           |"LRS"           |
 |allow_nested_items_to_be_public |Allow or disallow nested items within this Account to opt into being public.|string           |false           |
@@ -167,6 +168,7 @@ Variable name `storage_file_shares` with a set of key:value pairs for each file 
 
 * name is the file share name
 * quota as a number of GB
+* access_tier as one of "Hot", "Cool" or "TransactionOptimized".  Will default to "Hot".
 
 Format
 
@@ -289,7 +291,7 @@ resource "azurerm_subnet" "test" {
 ## Create storage account with default Standard, LRS.  Connected to a single subnet.
 ## Add a single blob storage container and single fileshare
 module "test_storage_account" {
-  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/storage-account?ref=v1.0.1"
+  source = "git::https://github.com/markwright56/terraform-azure-modules.git//modules/storage-account?ref=v1.0.7"
 
   storage_account_name       = var.storage_account_name
   resource_group_name        = azurerm_resource_group.test.name
@@ -308,6 +310,7 @@ module "test_storage_account" {
     "fshare-${var.storage_account_name}-1" = {
       name  = lower("fshare-${var.storage_account_name}-1")
       quota = 100
+      access_tier = "TransactionOptimized"
     }
   }
   

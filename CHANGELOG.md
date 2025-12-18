@@ -4,6 +4,12 @@ This file tracks each version tag to record the additions and changes made.
 
 Using this file will indicate which version to include on the source reference element.
 
+## v1.0.7 - 2025-12-18
+
+Update storage-account module.  Add access_tier variable to both account and file shares.
+
+Change blob and file share variable definitions to specific map objects rather than map(any).
+
 ## v1.0.6 - 2025-10-31
 
 Update nsg module to make inbound and outbound rule variable map objects rather than set.  This allows for merging of common and custom rules in the source repository.
