@@ -21,20 +21,47 @@ Optionally create blob containers, file shares and queues based upon variable ma
 
 ### Optional
 
-|Name                            |Description                                                                 |Type             |Default         |
-|--------------------------------|----------------------------------------------------------------------------|-----------------|----------------|
-|access_tier                     |The access tier of the storage account (ex: Hot, Cold).                     |string           |"Hot"           |
-|account_tier                    |The performance tier of the storage account (ex: Standard, Premium).        |string           |"Standard"      |
-|account_replication_type        |The replication strategy of the storage account (ex: ZRS,RAGRS).            |string           |"LRS"           |
-|allow_nested_items_to_be_public |Allow or disallow nested items within this Account to opt into being public.|string           |false           |
-|cross_tenant_replication_enabled|Should cross Tenant replication be enabled?                                 |string           |false           |
-|public_network_access_enabled   |Whether the public network access is enabled?                               |string           |true            |
-|managed_identity                |Configure managed identity access for storage account                       |object(see below)|null            |
-|network_rules                   |Configure network rules for storage account                                 |object(see below)|null            |
-|azure_files_authentication      |Configure active directory authentication for file stores                   |object(see below)|null            |
-|blob_properties                 |Configure blob retention policies                                           |object(see below)|null            |
+|Name                            |Description                                                                 |Type                  |Default         |
+|--------------------------------|----------------------------------------------------------------------------|----------------------|----------------|
+|account_kind                    |The account kind of the storage account (ex: StorageV2, BlobStorage)        |string                |"StorageV2"     |
+|account_tier                    |The performance tier of the storage account (ex: Standard, Premium).        |string                |"Standard"      |
+|account_replication_type        |The replication strategy of the storage account (ex: ZRS,RAGRS).            |string                |"LRS"           |
+|cross_tenant_replication_enabled|Should cross Tenant replication be enabled?                                 |bool                  |false           |
+|access_tier                     |The access tier of the storage account (ex: Hot, Cold).                     |string                |"Hot"           |
+|https_traffic_only_enabled      |Is https traffic only enabled?                                              |bool                  |true            |
+|min_tls_version                 |The minimum TLS version required for requests to the storage account        |string                |"TLS1_2"        |
+|allow_nested_items_to_be_public |Allow or disallow nested items within this Account to opt into being public.|bool                  |false           |
+|shared_access_key_enabled       |Whether the shared access key is enabled?                                   |bool                  |true            |
+|public_network_access_enabled   |Whether the public network access is enabled?                               |bool                  |true            |
+|default_to_oauth_authentication |Whether the default authentication method is OAuth                          |bool                  |false           |
+|large_file_share_enabled        |Whether large file shares are enabled?                                      |bool                  |false           |
+|custom_domain                   |The custom domain name to associate with the storage account                |object(see below)     |null            |
+|managed_identity                |Configure managed identity access for storage account                       |object(see below)     |null            |
+|blob_properties                 |Configure properties for the blob storage account                           |object(see below)     |null            |
+|queue_properties                |Configure properties for the queue storage account                          |object(see below)     |null            |
+|static_website                  |Static website configuration                                                |object(see below)     |null            |
+|share_properties                |Configure properties for the file share                                     |object(see below)     |null            |
+|network_rules                   |Configure network rules for storage account                                 |object(see below)     |null            |
+|azure_files_authentication      |Configure active directory authentication for file stores                   |object(see below)     |null            |
+|storage_blob_containers         |A map of storage blob containers to be created                              |map(object)(see below)|{}              |
+|storage_file_shares             |A map of storage file shares to be created                                  |map(object)(see below)|{}              |
+|storage_queues                  |A map of storage queues to be created                                       |map(object)(see below)|{}              |
+|tags                            |A map of tags to be associated to all resources                             |map(string)           |{}              |
 
-### Managed Identity
+#### Custom Domain
+
+Optional object to configure custom domain for the storage account.
+
+Example usage.
+
+```hcl
+  custom_domain = {
+    name = "storage.company.com"
+    use_sub_domain = false
+  }
+```
+
+#### Managed Identity
 
 Optional object to configure managed identity access on the storage account.
 
@@ -52,7 +79,92 @@ Example usage.
   }
 ```
 
-### Network rules
+#### Blob Properties
+
+Optional object to configure additional properties for blob container in the storage account.  If this object is omitted all the defaults will be used.
+
+Format example.
+
+```hcl
+  blob_properties = {
+    change_feed_enabled        = true # Enable or disable change feed - defaults to false.
+    change_feed_retention_days = 7    # Number of days to retain change feed.  The possible values are between 1 and 146000 days.
+    versioning_enabled         = true # Enable or disable versioning - defaults to false.
+    container_delete_retention_policy = {
+      enabled = true # Enable or disable container delete retention policy - defaults to false.
+      days    = 7    # Number of days to retain deleted containers.  The possible values are between 1 and 365 days.
+    }
+    delete_retention_policy = {
+      enabled          = true  # Enable or disable delete retention policy - defaults to false.
+      days             = 7     # Number of days to retain deleted blobs.  The possible values are between 1 and 365 days.
+      permanent_delete = false # Enable or disable permanent delete. See note below.
+    }
+    restore_policy = {
+      enabled = true # Enable or disable restore policy - defaults to false.
+      days    = 7    # Number of days to retain deleted blobs for restore.  The possible values are between 1 and 365 days.
+    }
+  }
+  ```
+
+Note: If a restore_policy is enabled, delete_retention_policy.permanent_delete must be false.
+
+#### Queue Properties
+
+Optional object to configure properties on the storage queues.  Consists of 3 objects for `logging`, `minute_metrics` and `hour_metrics`.
+
+Example format.
+
+```hcl
+  queue_properties = {
+    logging = {
+      delete = true
+      read = true
+      write = true
+      version = "1.0"
+      retention_days = 30
+    }
+    minute_metrics = {
+      enabled = true
+      version = "1.0"
+      retention_days = 15
+      include_apis = false
+    }
+    hour_metrics = {
+      enabled = true
+      version = "1.0"
+      retention_days = 15
+      include_apis = false
+    }
+  }
+```
+
+#### Static Website
+
+Optional object to configure static website.  If `enabled` is set to true then a blob container called `$web` will be created on the storage account.
+
+Example usage.
+
+```hcl
+  static_website = {
+    enabled = true
+    index_document = "index.html"
+    error_document = "404.html"
+  }
+```
+
+#### Share Properties
+
+Optional object to configure file share properties.  Currently only the deleted file retention days value is configurable.
+
+Example usage.
+
+```hcl
+  share_properties = {
+    retention_days = 30
+  }
+```
+
+#### Network rules
 
 Optional object to configure network rules on the storage account.
 
@@ -71,7 +183,7 @@ Format example with default values shown.
   }
 ```
 
-### Azure Files Authentication
+#### Azure Files Authentication
 
 Optional object to configure active directory authentication on the files shares.
 
@@ -108,35 +220,6 @@ If all the defaults are valid then the variable block only needs the following.
     }
   }
 ```
-
-### Blob Properties
-
-Optional object to configure additional properties for blob container in the storage account.  If this object is omitted all the defaults will be used.
-
-Format example.
-
-```hcl
-  blob_properties = {
-    change_feed_enabled        = true # Enable or disable change feed - defaults to false.
-    change_feed_retention_days = 7    # Number of days to retain change feed.  The possible values are between 1 and 146000 days.
-    versioning_enabled         = true # Enable or disable versioning - defaults to false.
-    container_delete_retention_policy = {
-      enabled = true # Enable or disable container delete retention policy - defaults to false.
-      days    = 7    # Number of days to retain deleted containers.  The possible values are between 1 and 365 days.
-    }
-    delete_retention_policy = {
-      enabled          = true  # Enable or disable delete retention policy - defaults to false.
-      days             = 7     # Number of days to retain deleted blobs.  The possible values are between 1 and 365 days.
-      permanent_delete = false # Enable or disable permanent delete. See note below.
-    }
-    restore_policy = {
-      enabled = true # Enable or disable restore policy - defaults to false.
-      days    = 7    # Number of days to retain deleted blobs for restore.  The possible values are between 1 and 365 days.
-    }
-  }
-  ```
-
-Note: If a restore_policy is enabled, delete_retention_policy.permanent_delete must be false.
 
 ### Storage blob containers
 

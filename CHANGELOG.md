@@ -4,6 +4,12 @@ This file tracks each version tag to record the additions and changes made.
 
 Using this file will indicate which version to include on the source reference element.
 
+## v1.0.8 - 2026-01-20
+
+Update storage-account module.
+
+Add more variables and configuration properties such as share_properties and custom_domain.
+
 ## v1.0.7 - 2025-12-18
 
 Update storage-account module.  Add access_tier variable to both account and file shares.
